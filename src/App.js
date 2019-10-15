@@ -97,6 +97,25 @@ function App() {
   const [facing, setFacing] = useState();
   const [placed, setPlaced] = useState(false);
 
+  const direction = {
+    N: {
+      index: 0,
+      label: "North"
+    },
+    E: {
+      index: 1,
+      label: "East"
+    },
+    S: {
+      index: 2,
+      label: "South"
+    },
+    W: {
+      index: 3,
+      label: "West"
+    }
+  };
+
   const Tile = (x, y) => {
     if (x === moveToX && y === moveToY && placed) {
       return <RobotTile key={`${x}${y}`} />;
@@ -116,7 +135,10 @@ function App() {
   };
 
   const handlePlaced = () => {
-    const faceTemp = aboutToFace.toUpperCase();
+    let faceTemp;
+    if(aboutToFace !== undefined) {
+      faceTemp = aboutToFace.toUpperCase();
+    }
     if (
         (axisX >= 0 &&
       axisX < 5) &&
@@ -147,6 +169,28 @@ function App() {
   const handleChangeFace = event => {
     const faceTemp = event.target.value.toUpperCase();
       setAboutToFace(faceTemp);
+  };
+
+  const handleRotateRight = () => {
+    if(placed && direction[facing] !== undefined) {
+      let tempRotate = direction[facing].index + 1;
+      if (tempRotate > 3) {
+        tempRotate = 0;
+      }
+      let directionItems = Object.keys(direction);
+      setFacing(directionItems[tempRotate]);
+    }
+  };
+
+  const handleRotateLeft = () => {
+    if(placed && direction[facing] !== undefined) {
+      let tempRotate = direction[facing].index - 1;
+      if (tempRotate < 0) {
+        tempRotate = 3;
+      }
+      let directionItems = Object.keys(direction);
+      setFacing(directionItems[tempRotate]);
+    }
   };
 
   return (
@@ -210,14 +254,22 @@ function App() {
             </Button>
           </div>
           <div>
-            <Button variant="outlined" className={classes.buttonControl}>
+            <Button
+                variant="outlined"
+                className={classes.buttonControl}
+                onClick={handleRotateLeft}
+            >
               <Typography className={classes.buttonControlText}>
                 Left
               </Typography>
             </Button>
           </div>
           <div>
-            <Button variant="outlined" className={classes.buttonControl}>
+            <Button
+                variant="outlined"
+                className={classes.buttonControl}
+                onClick={handleRotateRight}
+            >
               <Typography className={classes.buttonControlText}>
                 Right
               </Typography>

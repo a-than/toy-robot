@@ -126,8 +126,8 @@ function App() {
 
   const tileGrid = () => {
     let gridTile = [];
-    for (let x = 0; x < 5; x++) {
-      for (let y = 0; y < 5; y++) {
+    for (let y = 0; y < 5; y++) {
+      for (let x = 0; x < 5; x++) {
         gridTile.push(<div className={classes.tile}>{Tile(x, y)}</div>);
       }
     }
@@ -136,12 +136,12 @@ function App() {
 
   const handlePlaced = () => {
     let faceTemp;
-    if(aboutToFace !== undefined) {
+    if (aboutToFace !== undefined) {
       faceTemp = aboutToFace.toUpperCase();
     }
     if (
-        (axisX >= 0 &&
-      axisX < 5) &&
+      axisX >= 0 &&
+      axisX < 5 &&
       (axisY >= 0 && axisY < 5) &&
       (faceTemp === "N" ||
         faceTemp === "S" ||
@@ -168,11 +168,11 @@ function App() {
 
   const handleChangeFace = event => {
     const faceTemp = event.target.value.toUpperCase();
-      setAboutToFace(faceTemp);
+    setAboutToFace(faceTemp);
   };
 
   const handleRotateRight = () => {
-    if(placed && direction[facing] !== undefined) {
+    if (placed && direction[facing] !== undefined) {
       let tempRotate = direction[facing].index + 1;
       if (tempRotate > 3) {
         tempRotate = 0;
@@ -183,13 +183,35 @@ function App() {
   };
 
   const handleRotateLeft = () => {
-    if(placed && direction[facing] !== undefined) {
+    if (placed && direction[facing] !== undefined) {
       let tempRotate = direction[facing].index - 1;
       if (tempRotate < 0) {
         tempRotate = 3;
       }
       let directionItems = Object.keys(direction);
       setFacing(directionItems[tempRotate]);
+    }
+  };
+
+  const handleMove = () => {
+    if (placed) {
+      if (facing === "N") {
+        if (moveToY > 0) {
+          setMoveToY(moveToY - 1);
+        }
+      } else if (facing === "S") {
+        if (moveToY < 4) {
+          setMoveToY(moveToY + 1);
+        }
+      } else if (facing === "E") {
+        if (moveToX < 4) {
+          setMoveToX(moveToX + 1);
+        }
+      } else if (facing === "W") {
+        if (moveToX > 0) {
+          setMoveToX(moveToX - 1);
+        }
+      }
     }
   };
 
@@ -247,7 +269,11 @@ function App() {
             />
           </div>
           <div>
-            <Button variant="outlined" className={classes.buttonControl}>
+            <Button
+              variant="outlined"
+              className={classes.buttonControl}
+              onClick={handleMove}
+            >
               <Typography className={classes.buttonControlText}>
                 Move
               </Typography>
@@ -255,9 +281,9 @@ function App() {
           </div>
           <div>
             <Button
-                variant="outlined"
-                className={classes.buttonControl}
-                onClick={handleRotateLeft}
+              variant="outlined"
+              className={classes.buttonControl}
+              onClick={handleRotateLeft}
             >
               <Typography className={classes.buttonControlText}>
                 Left
@@ -266,9 +292,9 @@ function App() {
           </div>
           <div>
             <Button
-                variant="outlined"
-                className={classes.buttonControl}
-                onClick={handleRotateRight}
+              variant="outlined"
+              className={classes.buttonControl}
+              onClick={handleRotateRight}
             >
               <Typography className={classes.buttonControlText}>
                 Right

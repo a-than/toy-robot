@@ -73,6 +73,17 @@ const useStyles = makeStyles(theme => ({
   messageWrapper: {
     width: "330px",
     height: "240px"
+  },
+  facing: {
+    width: "100px",
+    height: "100px",
+    marginRight: "10px",
+    marginLeft: "auto"
+  },
+  facingText: {
+    fontFamily: "Helvetica",
+    fontSize: "100px",
+    color: "#006767"
   }
 }));
 
@@ -82,7 +93,8 @@ function App() {
   const [axisY, setAxisY] = useState();
   const [moveToX, setMoveToX] = useState();
   const [moveToY, setMoveToY] = useState();
-  const [face, setFace] = useState();
+  const [aboutToFace, setAboutToFace] = useState();
+  const [facing, setFacing] = useState();
   const [placed, setPlaced] = useState(false);
 
   const Tile = (x, y) => {
@@ -104,9 +116,24 @@ function App() {
   };
 
   const handlePlaced = () => {
-    setMoveToX(parseInt(axisX));
-    setMoveToY(parseInt(axisY));
-    setPlaced(true);
+    const faceTemp = aboutToFace.toUpperCase();
+    if (
+        (axisX >= 0 &&
+      axisX < 5) &&
+      (axisY >= 0 && axisY < 5) &&
+      (faceTemp === "N" ||
+        faceTemp === "S" ||
+        faceTemp === "E" ||
+        faceTemp === "W")
+    ) {
+      setMoveToX(parseInt(axisX));
+      setMoveToY(parseInt(axisY));
+      setFacing(aboutToFace);
+      setAxisX("");
+      setAxisY("");
+      setAboutToFace("");
+      setPlaced(true);
+    }
   };
 
   const handleChangeX = event => {
@@ -118,7 +145,8 @@ function App() {
   };
 
   const handleChangeFace = event => {
-    setFace(event.target.value);
+    const faceTemp = event.target.value.toUpperCase();
+      setAboutToFace(faceTemp);
   };
 
   return (
@@ -129,13 +157,17 @@ function App() {
           <div className={classes.tileWrapper}>{tileGrid()}</div>
         </div>
         <div className={classes.controlsWrapper}>
-          <div className={classes.messageWrapper}></div>
+          <div className={classes.messageWrapper}>
+            <div className={classes.facing}>
+              <Typography className={classes.facingText}>{facing}</Typography>
+            </div>
+          </div>
           <div className={classes.placeWrapper}>
             <div>
               <Button
-                  variant="outlined"
-                  className={classes.buttonControl}
-                  onClick={handlePlaced}
+                variant="outlined"
+                className={classes.buttonControl}
+                onClick={handlePlaced}
               >
                 <Typography className={classes.buttonControlText}>
                   Place
@@ -166,7 +198,7 @@ function App() {
               className={classes.textField}
               margin="dense"
               variant="outlined"
-              value={face}
+              value={aboutToFace}
               onChange={handleChangeFace}
             />
           </div>

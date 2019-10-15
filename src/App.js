@@ -68,7 +68,10 @@ const useStyles = makeStyles(theme => ({
     width: "38px",
     height: "38px",
     marginTop: "16px",
-    marginLeft: "10px"
+    marginLeft: "10px",
+    "&.MuiOutlinedInput-input": {
+      padding: "0"
+    }
   },
   messageWrapper: {
     width: "330px",
@@ -84,6 +87,14 @@ const useStyles = makeStyles(theme => ({
     fontFamily: "Helvetica",
     fontSize: "100px",
     color: "#006767"
+  },
+  report: {
+    fontFamily: "Helvetica",
+    fontSize: "16px",
+    marginTop: "70px",
+    marginLeft: "16px",
+    marginRight: "10px",
+    color: "#006767"
   }
 }));
 
@@ -96,6 +107,7 @@ function App() {
   const [aboutToFace, setAboutToFace] = useState();
   const [facing, setFacing] = useState();
   const [placed, setPlaced] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
   const direction = {
     N: {
@@ -136,6 +148,7 @@ function App() {
 
   const handlePlaced = () => {
     let faceTemp;
+    setShowMessage(false);
     if (aboutToFace !== undefined) {
       faceTemp = aboutToFace.toUpperCase();
     }
@@ -159,20 +172,24 @@ function App() {
   };
 
   const handleChangeX = event => {
+    setShowMessage(false);
     setAxisX(parseInt(event.target.value));
   };
 
   const handleChangeY = event => {
+    setShowMessage(false);
     setAxisY(parseInt(event.target.value));
   };
 
   const handleChangeFace = event => {
+    setShowMessage(false);
     const faceTemp = event.target.value.toUpperCase();
     setAboutToFace(faceTemp);
   };
 
   const handleRotateRight = () => {
     if (placed && direction[facing] !== undefined) {
+      setShowMessage(false);
       let tempRotate = direction[facing].index + 1;
       if (tempRotate > 3) {
         tempRotate = 0;
@@ -184,6 +201,7 @@ function App() {
 
   const handleRotateLeft = () => {
     if (placed && direction[facing] !== undefined) {
+      setShowMessage(false);
       let tempRotate = direction[facing].index - 1;
       if (tempRotate < 0) {
         tempRotate = 3;
@@ -195,6 +213,7 @@ function App() {
 
   const handleMove = () => {
     if (placed) {
+      setShowMessage(false);
       if (facing === "N") {
         if (moveToY > 0) {
           setMoveToY(moveToY - 1);
@@ -215,6 +234,12 @@ function App() {
     }
   };
 
+  const handleReport = () => {
+    if (placed) {
+      setShowMessage(true);
+    }
+  };
+
   return (
     <div className="App">
       <Typography className={classes.title}>Toy Robot Simulator</Typography>
@@ -227,6 +252,12 @@ function App() {
             <div className={classes.facing}>
               <Typography className={classes.facingText}>{facing}</Typography>
             </div>
+            {showMessage && (
+              <Typography className={classes.report}>
+                The Robot is placed in position X: {moveToX} Y: {moveToY} and
+                facing {facing}
+              </Typography>
+            )}
           </div>
           <div className={classes.placeWrapper}>
             <div>
@@ -243,7 +274,7 @@ function App() {
             <TextField
               id="outlined-x"
               label="X"
-              className={classes.textField}
+              className={`${classes.textField} without-padding`}
               margin="dense"
               variant="outlined"
               value={axisX}
@@ -252,7 +283,7 @@ function App() {
             <TextField
               id="outlined-y"
               label="Y"
-              className={classes.textField}
+              className={`${classes.textField} without-padding`}
               margin="dense"
               variant="outlined"
               value={axisY}
@@ -261,7 +292,7 @@ function App() {
             <TextField
               id="outlined-f"
               label="F"
-              className={classes.textField}
+              className={`${classes.textField} without-padding`}
               margin="dense"
               variant="outlined"
               value={aboutToFace}
@@ -302,7 +333,11 @@ function App() {
             </Button>
           </div>
           <div>
-            <Button variant="outlined" className={classes.buttonControl}>
+            <Button
+              variant="outlined"
+              className={classes.buttonControl}
+              onClick={handleReport}
+            >
               <Typography className={classes.buttonControlText}>
                 Report
               </Typography>

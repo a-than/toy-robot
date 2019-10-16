@@ -34,7 +34,7 @@ Your toy Robot will respond to your commands by it is clever enough not to fall 
 
 Enjoy!!!!   
 
-![ScreenShoot](https://github.com/a-than/toy-robot)
+![ScreenShoot](https://github.com/a-than/toy-robot/blob/master/screenshot.png)
 
 
 
